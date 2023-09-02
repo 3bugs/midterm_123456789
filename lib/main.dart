@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:cpsu_midterm_1_2023/models/question.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -36,6 +40,27 @@ const colorGreen = Color(0xFF49B0AA);
 const colorPink = Color(0xFFF98C8D);
 
 class _HomePageState extends State<HomePage> {
+  final List<Question> _questions = [];
+  var _currentQuestionIndex = 0;
+
+  Future<void> readJson() async {
+    final String response = await rootBundle.loadString('assets/data/questions.json');
+    final data = await json.decode(response);
+    debugPrint(data['questions'].toString());
+
+    setState(() {
+      _questions.addAll(data['questions']
+          .map<Question>((item) => Question.fromJson(item))
+          .toList());
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    readJson();
+  }
+
   @override
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
@@ -68,102 +93,134 @@ class _HomePageState extends State<HomePage> {
               fit: BoxFit.cover,
             ),
           ),
-          child: Column(
-            children: [
-              Text('Good Morning', style: textTheme.headlineMedium),
-              Text('Promlert',
-                  style: textTheme.headlineSmall!.copyWith(
-                      fontWeight: FontWeight.bold, color: Colors.black87)),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.all(28.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(width: 3.0, color: Colors.black),
-                  borderRadius:
-                      const BorderRadius.all(Radius.elliptical(40.0, 35.0)),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black12,
-                      spreadRadius: 5.0,
-                      blurRadius: 8.0,
-                      offset: Offset(2.0, 2.0),
-                    )
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: _questions.isEmpty
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
                   children: [
-                    Text('Question 1 of 5',
-                        textAlign: TextAlign.center,
-                        style: textTheme.titleLarge),
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 20.0),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0, vertical: 20.0),
-                      decoration: BoxDecoration(
-                        color: colorGreen,
-                        border: Border.all(width: 3.0, color: Colors.black87),
-                        borderRadius: const BorderRadius.all(
-                            Radius.elliptical(28.0, 26.0)),
-                        /*boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black12,
-                            spreadRadius: 5.0,
-                            blurRadius: 8.0,
-                            offset: Offset(2.0, 2.0),
-                          )
-                        ],*/
-                      ),
-                      child: Text(
-                        'He was too shy to ...... to strangers.',
-                        textAlign: TextAlign.center,
+                    Text('Good Morning', style: textTheme.headlineMedium),
+                    Text('Student ID',
                         style: textTheme.headlineSmall!.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87)),
+                    const Spacer(),
+                    QuizView(
+                      title:
+                          'Question ${_currentQuestionIndex + 1} of ${_questions.length}',
+                      question: _questions[_currentQuestionIndex],
                     ),
-                    const Choice(
-                        choiceName: 'A', choiceText: 'talk', selected: true),
-                    const Choice(choiceName: 'B', choiceText: 'talking'),
-                    const Choice(choiceName: 'C', choiceText: 'talked'),
-                    const Choice(choiceName: 'D', choiceText: 'be talked'),
-                    const SizedBox(height: 8.0),
+                    const Spacer(),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: AppButton(
+                            backgroundColor: colorPink,
+                            child: const Icon(
+                              Icons.chevron_left,
+                              size: 30.0,
+                              color: Colors.black,
+                            ),
+                            onClick: () {
+                              setState(() {
+                                _currentQuestionIndex--;
+                                if (_currentQuestionIndex < 0) {
+                                  _currentQuestionIndex = 0;
+                                }
+                              });
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          child: AppButton(
+                            backgroundColor: colorGreen,
+                            child: const Icon(
+                              Icons.chevron_right,
+                              size: 30.0,
+                              color: Colors.black,
+                            ),
+                            onClick: () {
+                              setState(() {
+                                _currentQuestionIndex++;
+                                if (_currentQuestionIndex >
+                                    _questions.length - 1) {
+                                  _currentQuestionIndex = _questions.length - 1;
+                                }
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16.0),
                   ],
                 ),
-              ),
-              const Spacer(),
-              Row(
-                children: [
-                  Expanded(
-                    child: AppButton(
-                      backgroundColor: colorPink,
-                      child: const Icon(
-                        Icons.chevron_left,
-                        size: 30.0,
-                        color: Colors.black,
-                      ),
-                      onClick: () {},
-                    ),
-                  ),
-                  Expanded(
-                    child: AppButton(
-                      backgroundColor: colorGreen,
-                      child: const Icon(
-                        Icons.chevron_right,
-                        size: 30.0,
-                        color: Colors.white,
-                      ),
-                      onClick: () {},
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16.0),
-            ],
-          ),
         ),
+      ),
+    );
+  }
+}
+
+class QuizView extends StatelessWidget {
+  const QuizView({
+    super.key,
+    required this.title,
+    required this.question,
+  });
+
+  final String title;
+  final Question question;
+
+  static const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+  @override
+  Widget build(BuildContext context) {
+    var textTheme = Theme.of(context).textTheme;
+
+    return Container(
+      padding: const EdgeInsets.all(28.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(width: 3.0, color: Colors.black),
+        borderRadius: const BorderRadius.all(Radius.elliptical(40.0, 35.0)),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            spreadRadius: 5.0,
+            blurRadius: 8.0,
+            offset: Offset(2.0, 2.0),
+          )
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(title, textAlign: TextAlign.center, style: textTheme.titleLarge),
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 20.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+            decoration: BoxDecoration(
+              color: colorGreen,
+              border: Border.all(width: 3.0, color: Colors.black87),
+              borderRadius:
+                  const BorderRadius.all(Radius.elliptical(28.0, 26.0)),
+            ),
+            child: Text(
+              question.question,
+              textAlign: TextAlign.center,
+              style: textTheme.headlineSmall!.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          for (var i = 0; i < question.options.length; i++)
+            Choice(
+              choiceName: alphabets.substring(i, i + 1),
+              choiceText: question.options[i].text,
+              selected: question.options[i].isAnswer,
+            ),
+          const SizedBox(height: 8.0),
+        ],
       ),
     );
   }
@@ -183,23 +240,26 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8.0),
-      padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        border: Border.all(width: 3.0, color: Colors.black54),
-        borderRadius: const BorderRadius.all(Radius.elliptical(32.0, 28.0)),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            spreadRadius: 5.0,
-            blurRadius: 8.0,
-            offset: Offset(2.0, 2.0),
-          )
-        ],
+    return GestureDetector(
+      onTap: onClick,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          border: Border.all(width: 3.0, color: Colors.black54),
+          borderRadius: const BorderRadius.all(Radius.elliptical(32.0, 28.0)),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              spreadRadius: 5.0,
+              blurRadius: 8.0,
+              offset: Offset(2.0, 2.0),
+            )
+          ],
+        ),
+        child: child,
       ),
-      child: child,
     );
   }
 }

@@ -7,9 +7,11 @@ class Question {
   factory Question.fromJson(Map<String, dynamic> json) {
     return Question(
       question: json['question'],
-      options: json['options'].map<Option>(
-        (item) => Option.fromJson(json['options']),
-      ),
+      options: json['options']
+          .map<Option>(
+            (item) => Option.fromJson(item),
+          )
+          .toList(),
     );
   }
 }
