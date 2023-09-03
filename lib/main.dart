@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cpsu_midterm_1_2023/models/question.dart';
@@ -58,7 +59,13 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    readJson();
+    readJson().then((_) => {
+      Timer.periodic(const Duration(milliseconds: 2000), (timer) {
+        setState(() {
+          _currentQuestionIndex = ++_currentQuestionIndex % _questions.length;
+        });
+      })
+    });
   }
 
   @override

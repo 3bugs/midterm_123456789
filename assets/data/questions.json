@@ -295,27 +295,6 @@
       ]
     },
     {
-      "question": "What is the chemical symbol for the element oxygen?",
-      "options": [
-        {
-          "text": "O",
-          "is_answer": false
-        },
-        {
-          "text": "Ox",
-          "is_answer": false
-        },
-        {
-          "text": "O2",
-          "is_answer": false
-        },
-        {
-          "text": "Oxygen",
-          "is_answer": true
-        }
-      ]
-    },
-    {
       "question": "Which famous scientist is known for the theory of relativity?",
       "options": [
         {
@@ -629,6 +608,241 @@
           "is_answer": false
         }
       ]
+    },
+    {
+      "question": "Which gas is the primary component of Earth's atmosphere?",
+      "options": [
+        {
+          "text": "Oxygen",
+          "is_answer": false
+        },
+        {
+          "text": "Carbon Dioxide",
+          "is_answer": false
+        },
+        {
+          "text": "Nitrogen",
+          "is_answer": true
+        },
+        {
+          "text": "Argon",
+          "is_answer": false
+        }
+      ]
+    },
+    {
+      "question": "What is the capital of Brazil?",
+      "options": [
+        {
+          "text": "Buenos Aires",
+          "is_answer": false
+        },
+        {
+          "text": "Brasília",
+          "is_answer": true
+        },
+        {
+          "text": "São Paulo",
+          "is_answer": false
+        },
+        {
+          "text": "Rio de Janeiro",
+          "is_answer": false
+        }
+      ]
+    },
+    {
+      "question": "Who is the author of '1984'?",
+      "options": [
+        {
+          "text": "George Orwell",
+          "is_answer": true
+        },
+        {
+          "text": "Aldous Huxley",
+          "is_answer": false
+        },
+        {
+          "text": "Ray Bradbury",
+          "is_answer": false
+        },
+        {
+          "text": "Philip K. Dick",
+          "is_answer": false
+        }
+      ]
+    },
+    {
+      "question": "What is the tallest mountain in the world?",
+      "options": [
+        {
+          "text": "Mount Kilimanjaro",
+          "is_answer": false
+        },
+        {
+          "text": "Mount Everest",
+          "is_answer": true
+        },
+        {
+          "text": "Mount Fuji",
+          "is_answer": false
+        },
+        {
+          "text": "Mount McKinley",
+          "is_answer": false
+        }
+      ]
+    },
+    {
+      "question": "Which country is known as the 'Land of a Thousand Lakes'?",
+      "options": [
+        {
+          "text": "Sweden",
+          "is_answer": false
+        },
+        {
+          "text": "Canada",
+          "is_answer": false
+        },
+        {
+          "text": "Finland",
+          "is_answer": true
+        },
+        {
+          "text": "Norway",
+          "is_answer": false
+        }
+      ]
+    },
+    {
+      "question": "Who is the current President of the United States (as of 2023)?",
+      "options": [
+        {
+          "text": "Barack Obama",
+          "is_answer": false
+        },
+        {
+          "text": "Joe Biden",
+          "is_answer": true
+        },
+        {
+          "text": "Donald Trump",
+          "is_answer": false
+        },
+        {
+          "text": "Hillary Clinton",
+          "is_answer": false
+        }
+      ]
+    },
+    {
+      "question": "Which animal is known as the 'King of the Jungle'?",
+      "options": [
+        {
+          "text": "Leopard",
+          "is_answer": false
+        },
+        {
+          "text": "Tiger",
+          "is_answer": false
+        },
+        {
+          "text": "Lion",
+          "is_answer": true
+        },
+        {
+          "text": "Cheetah",
+          "is_answer": false
+        }
+      ]
+    },
+    {
+      "question": "What is the smallest planet in our solar system?",
+      "options": [
+        {
+          "text": "Earth",
+          "is_answer": false
+        },
+        {
+          "text": "Mars",
+          "is_answer": false
+        },
+        {
+          "text": "Mercury",
+          "is_answer": true
+        },
+        {
+          "text": "Venus",
+          "is_answer": false
+        }
+      ]
+    },
+    {
+      "question": "Which famous scientist is known for his theory of gravity?",
+      "options": [
+        {
+          "text": "Isaac Newton",
+          "is_answer": true
+        },
+        {
+          "text": "Albert Einstein",
+          "is_answer": false
+        },
+        {
+          "text": "Stephen Hawking",
+          "is_answer": false
+        },
+        {
+          "text": "Galileo Galilei",
+          "is_answer": false
+        }
+      ]
+    },
+    {
+      "question": "What is the largest species of shark?",
+      "options": [
+        {
+          "text": "Great White Shark",
+          "is_answer": false
+        },
+        {
+          "text": "Hammerhead Shark",
+          "is_answer": false
+        },
+        {
+          "text": "Whale Shark",
+          "is_answer": true
+        },
+        {
+          "text": "Tiger Shark",
+          "is_answer": false
+        }
+      ]
+    },
+    {
+      "question": "Who wrote the novel 'Pride and Prejudice'?",
+      "options": [
+        {
+          "text": "Charles Dickens",
+          "is_answer": false
+        },
+        {
+          "text": "Jane Austen",
+          "is_answer": true
+        },
+        {
+          "text": "Emily Brontë",
+          "is_answer": false
+        },
+        {
+          "text": "F. Scott Fitzgerald",
+          "is_answer": false
+        }
+      ]
     }
   ]
 }
+
+
+
+
