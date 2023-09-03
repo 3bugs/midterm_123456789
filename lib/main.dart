@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Midterm Exam 1/2566 CP SU',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blueGrey,
         fontFamily: GoogleFonts.poppins().fontFamily,
         /*textTheme: GoogleFonts.poppinsTextTheme(
           Theme.of(context).textTheme,
@@ -43,9 +43,12 @@ const colorPink = Color(0xFFF98C8D);
 class _HomePageState extends State<HomePage> {
   final List<Question> _questions = [];
   var _currentQuestionIndex = 0;
+  var _autoRun = true;
+  Timer? _timer;
 
   Future<void> readJson() async {
-    final String response = await rootBundle.loadString('assets/data/questions.json');
+    final String response =
+        await rootBundle.loadString('assets/data/questions.json');
     final data = await json.decode(response);
     debugPrint(data['questions'].toString());
 
@@ -59,13 +62,23 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    readJson().then((_) => {
-      Timer.periodic(const Duration(milliseconds: 2000), (timer) {
-        setState(() {
-          _currentQuestionIndex = ++_currentQuestionIndex % _questions.length;
-        });
-      })
+    readJson().then((_) => _startTimer());
+  }
+
+  void _startTimer() {
+    if (_timer != null) {
+      _timer!.cancel();
+    }
+
+    _timer = Timer.periodic(const Duration(milliseconds: 2000), (timer) {
+      setState(() {
+        _currentQuestionIndex = ++_currentQuestionIndex % _questions.length;
+      });
     });
+  }
+
+  void _stopTimer() {
+    _timer?.cancel();
   }
 
   @override
@@ -88,78 +101,106 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: horizontalMargin,
-            vertical: verticalMargin,
-          ),
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/bg_colorful.jpg"),
-              opacity: 0.6,
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: _questions.isEmpty
-              ? const Center(child: CircularProgressIndicator())
-              : Column(
-                  children: [
-                    Text('Good Morning', style: textTheme.headlineMedium),
-                    Text('Student ID',
-                        style: textTheme.headlineSmall!.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87)),
-                    const Spacer(),
-                    QuizView(
-                      title:
-                          'Question ${_currentQuestionIndex + 1} of ${_questions.length}',
-                      question: _questions[_currentQuestionIndex],
-                    ),
-                    const Spacer(),
-                    Row(
+        child: Stack(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: horizontalMargin,
+                vertical: verticalMargin,
+              ),
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/images/bg_colorful.jpg"),
+                  opacity: 0.6,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: _questions.isEmpty
+                  ? const Center(child: CircularProgressIndicator())
+                  : Column(
                       children: [
-                        Expanded(
-                          child: AppButton(
-                            backgroundColor: colorPink,
-                            child: const Icon(
-                              Icons.chevron_left,
-                              size: 30.0,
-                              color: Colors.black,
-                            ),
-                            onClick: () {
-                              setState(() {
-                                _currentQuestionIndex--;
-                                if (_currentQuestionIndex < 0) {
-                                  _currentQuestionIndex = 0;
-                                }
-                              });
-                            },
-                          ),
+                        Text('Good Morning', style: textTheme.headlineMedium),
+                        Text('Student ID',
+                            style: textTheme.headlineSmall!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87)),
+                        const Spacer(),
+                        QuizView(
+                          title:
+                              'Question ${_currentQuestionIndex + 1} of ${_questions.length}',
+                          question: _questions[_currentQuestionIndex],
                         ),
-                        Expanded(
-                          child: AppButton(
-                            backgroundColor: colorGreen,
-                            child: const Icon(
-                              Icons.chevron_right,
-                              size: 30.0,
-                              color: Colors.black,
+                        const Spacer(),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: AppButton(
+                                backgroundColor: colorPink,
+                                child: const Icon(
+                                  Icons.chevron_left,
+                                  size: 30.0,
+                                  color: Colors.black,
+                                ),
+                                onClick: () {
+                                  setState(() {
+                                    _currentQuestionIndex--;
+                                    if (_currentQuestionIndex < 0) {
+                                      _currentQuestionIndex = 0;
+                                    }
+                                  });
+                                },
+                              ),
                             ),
-                            onClick: () {
-                              setState(() {
-                                _currentQuestionIndex++;
-                                if (_currentQuestionIndex >
-                                    _questions.length - 1) {
-                                  _currentQuestionIndex = _questions.length - 1;
-                                }
-                              });
-                            },
-                          ),
+                            Expanded(
+                              child: AppButton(
+                                backgroundColor: colorGreen,
+                                child: const Icon(
+                                  Icons.chevron_right,
+                                  size: 30.0,
+                                  color: Colors.black,
+                                ),
+                                onClick: () {
+                                  setState(() {
+                                    _currentQuestionIndex++;
+                                    if (_currentQuestionIndex >
+                                        _questions.length - 1) {
+                                      _currentQuestionIndex =
+                                          _questions.length - 1;
+                                    }
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
                         ),
+                        const SizedBox(height: 16.0),
                       ],
                     ),
-                    const SizedBox(height: 16.0),
-                  ],
-                ),
+            ),
+            Positioned(
+              top: verticalMargin + 8.0,
+              right: horizontalMargin,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Switch(
+                    value: _autoRun,
+                    onChanged: (value) {
+                      setState(() {
+                        _autoRun = value;
+                        if (value) {
+                          _startTimer();
+                        } else {
+                          _stopTimer();
+                        }
+                      });
+                    },
+                  ),
+                  const Text('Auto Run'),
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );
